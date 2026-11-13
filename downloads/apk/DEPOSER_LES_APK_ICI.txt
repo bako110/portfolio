@@ -1,0 +1,5 @@
+Dépose ici les APK de production signés et vérifiés :
+- ediscussion.apk
+- edvia.apk
+
+Conserve les noms attendus par les liens du portfolio ou adapte les liens HTML.

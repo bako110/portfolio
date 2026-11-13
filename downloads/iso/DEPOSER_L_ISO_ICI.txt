@@ -1,0 +1,2 @@
+Dépose ici l'image ISO officielle de NuniLib OS sous le nom : nunilib-os.iso
+Publie aussi sa version, sa taille et son SHA-256 dans la fiche projet.
