@@ -44,6 +44,23 @@
 
   root.classList.remove("no-js");
 
+  /* ---------- Indicateur de chargement des images ----------
+     Ajoute la classe .is-loading (spinner + fondu) au conteneur tant que ses images ne sont pas arrivées.
+     Une image déjà en cache n'affiche rien. Sécurité : le spinner disparaît au bout de 20 s. */
+  function watchImages(container, imgs) {
+    var pending = 0, done = false;
+    var stop = function () { if (done) return; done = true; container.classList.remove("is-loading"); };
+    imgs.forEach(function (img) {
+      if (!img) return;
+      if (img.complete) return;                     // déjà chargée (cache) ou déjà en erreur
+      pending++;
+      var fin = function () { if (--pending <= 0) stop(); };
+      img.addEventListener("load", fin, { once: true });
+      img.addEventListener("error", fin, { once: true });
+    });
+    if (pending > 0) { container.classList.add("is-loading"); setTimeout(stop, 20000); }
+  }
+
   /* ---------- Compteurs animés ---------- */
   document.querySelectorAll("[data-count]").forEach(function (el) {
     var end = el.dataset.count === "projects" ? (SITE.projectsCount || PROJECTS.length) : +el.dataset.count, t0 = null;
@@ -170,6 +187,8 @@
     img.addEventListener("error", fail);
   });
 
+  document.querySelectorAll(".photo-frame").forEach(function (f) { watchImages(f, [].slice.call(f.querySelectorAll("img"))); });
+
   /* Inclinaison 3D fluide (souris uniquement, via requestAnimationFrame) */
   var frame = document.querySelector(".photo-frame");
   if (frame && !reduce && window.matchMedia("(hover: hover)").matches) {
@@ -249,6 +268,8 @@
       img.addEventListener("error", fail);
     });
 
+    slider.querySelectorAll(".shot").forEach(function (s) { watchImages(s, [].slice.call(s.querySelectorAll("img"))); });
+
     var slides = slider.querySelectorAll(".slide");
     var tabs = slider.querySelectorAll(".tab");
     var counter = document.getElementById("counter");
@@ -313,7 +334,7 @@
         : '<div class="stack-row"><h4>' + S.techs + '</h4><div class="chips">' + (L(p.tags) || []).map(chip).join("") + "</div></div>";
       var shots = (p.screens && p.screens.length)
         ? '<div class="d-track" tabindex="0" aria-label="' + S.shotsOf + p.name + '">' + p.screens.map(function (s, i) {
-            return '<img src="' + U("assets/images/projects/" + p.id + "/" + s) + '" alt="' + S.shotAlt(i + 1, p.name) + '" loading="lazy">';
+            return '<span class="d-fig"><img src="' + U("assets/images/projects/" + p.id + "/" + s) + '" alt="' + S.shotAlt(i + 1, p.name) + '" loading="lazy"></span>';
           }).join("") + '</div><div class="d-arrows"><button type="button" class="arrow" data-dir="-1" aria-label="' + S.prevShot + '">←</button><button type="button" class="arrow" data-dir="1" aria-label="' + S.nextShot + '">→</button></div>'
         : '<div class="d-empty"><strong>' + S.emptyTitle + "</strong><span>" + S.emptyText(p.name) + "</span></div>";
       var feats = L(p.features);
@@ -332,6 +353,7 @@
       if (i < 0) return;
       var links = [].map.call(slider.querySelectorAll("#" + id + " .p-actions a"), function (a) { return a.outerHTML; }).join("");
       dlg.innerHTML = detailHTML(PROJECTS[i], links);
+      dlg.querySelectorAll(".d-tile").forEach(function (t) { watchImages(t, [].slice.call(t.querySelectorAll("img"))); });
       lastFocus = document.activeElement;
       root.classList.add("modal-open");
       dlg.showModal();
@@ -339,7 +361,11 @@
       dlg.querySelector(".d-close").focus();
       var track = dlg.querySelector(".d-track");
       if (track) {
-        track.querySelectorAll("img").forEach(function (img) { img.addEventListener("error", function () { img.remove(); }); });
+        track.querySelectorAll(".d-fig").forEach(function (fig) {
+          var img = fig.querySelector("img");
+          watchImages(fig, [img]);
+          img.addEventListener("error", function () { fig.remove(); });
+        });
         dlg.querySelectorAll(".d-arrows .arrow").forEach(function (b) {
           b.addEventListener("click", function () { track.scrollBy({ left: +b.dataset.dir * track.clientWidth * 0.8, behavior: "smooth" }); });
         });

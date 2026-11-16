@@ -137,3 +137,13 @@ button { font: inherit; color: inherit; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-delay: 0s !important; transition-duration: .01ms !important; }
   .m-reveal { opacity: 1; transform: none; }
 }
+
+/* Chargement des images : spinner + fondu à l'arrivée */
+@keyframes spin { to { transform: rotate(360deg); } }
+.is-loading { position: relative; }
+.is-loading::after { content: ""; position: absolute; left: 50%; top: 50%; width: 30px; height: 30px; margin: -15px 0 0 -15px; border-radius: 50%; border: 3px solid color-mix(in srgb, var(--accent) 22%, transparent); border-top-color: var(--accent); animation: spin .8s linear infinite; z-index: 4; pointer-events: none; }
+.is-loading img { opacity: 0; }
+.photo-frame img, .d-fig img, .d-tile img { transition: opacity .45s ease; }
+.shot .shot-logo { transition: transform 1.2s var(--ease), opacity .45s ease; }
+.shot .shot-cap { transition: opacity .45s ease; }
+@media (prefers-reduced-motion: reduce) { .is-loading::after { animation: spin 1.6s linear infinite !important; } }
