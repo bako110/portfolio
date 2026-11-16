@@ -161,3 +161,18 @@
   .actions .btn { flex: 1 1 100%; padding: 15px 24px; font-size: 16px; }
   .hero-facts { margin-top: auto; padding-top: 28px; }
 }
+
+/* Sélecteur de langue (FR / EN) */
+.lang-switch { display: inline-flex; align-items: center; gap: 6px; height: 42px; padding: 0 14px 0 11px; border-radius: 999px; border: 1px solid var(--line-strong); background: var(--surface); font-size: 13px; font-weight: 700; letter-spacing: .05em; color: var(--text); transition: transform .4s var(--ease), background .3s; }
+.lang-switch:hover { transform: translateY(-2px); background: var(--accent-soft); }
+.lang-switch svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+@media (max-width: 760px) { .lang-switch { padding: 0 12px; } .lang-switch svg { display: none; } }
+
+/* Écrans intermédiaires : menu plus compact pour que l'en-tête tienne (FR plus long que EN) */
+@media (min-width: 761px) and (max-width: 1040px) {
+  .nav a { padding: 8px 9px; font-size: 14px; }
+  .nav a:not(.nav-cta)::after { left: 9px; right: 9px; }
+  .nav .nav-cta { margin-left: 4px; padding: 9px 15px; }
+  .brand { font-size: 16px; }
+  .header { gap: 8px; }
+}

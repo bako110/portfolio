@@ -1,13 +1,48 @@
 /* ==========================================================
-   main.js — menu, transitions de page, carrousel de projets,
-   contact, inclinaison de la photo, vérification des fichiers
+   main.js — menu, thème, transitions de page, carrousel de projets,
+   fiches détaillées, contact, vérification des fichiers (FR + EN)
    ========================================================== */
 (function () {
   var SITE = window.SITE || {};
   var PROJECTS = window.PROJECTS || [];
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var root = document.documentElement;
 
-  document.documentElement.classList.remove("no-js");
+  /* ---------- Langue, chemins et textes ---------- */
+  var LANG = root.lang === "en" ? "en" : "fr";
+  var B = root.dataset.base || "";                                   // "" ou "../" (pages dans en/)
+  var U = function (p) { return /^([a-z][a-z0-9+.-]*:|\/)/i.test(p) ? p : B + p; };   // préfixe les chemins relatifs
+  var L = function (x) {                                             // choisit le texte {fr, en}
+    return (x && typeof x === "object" && !Array.isArray(x) && ("fr" in x || "en" in x)) ? (x[LANG] != null ? x[LANG] : x.fr) : x;
+  };
+  var S = {
+    fr: {
+      openMenu: "Ouvrir le menu", closeMenu: "Fermer le menu",
+      theme: function (l) { return "Thème : " + l + ". Changer"; }, auto: "Automatique (appareil)", light: "Clair", dark: "Sombre",
+      shotOf: "Capture de ", logoOf: "Logo ", osText: "Un environnement numérique à construire.",
+      slideOf: function (i, n) { return i + " sur " + n; }, details: "Voir les détails",
+      prev: "Projet précédent", next: "Projet suivant", tabs: "Projets", close: "Fermer",
+      shotsOf: "Captures d’écran de ", shotAlt: function (i, n) { return "Capture " + i + " de " + n; },
+      prevShot: "Capture précédente", nextShot: "Capture suivante",
+      emptyTitle: "Captures à venir", emptyText: function (n) { return "Les écrans de " + n + " seront ajoutés ici."; },
+      features: "Fonctionnalités", stack: "Stack technique", techs: "Technologies", groups: { "Base de données": "Base de données" },
+      cvA: "CV (français)", cvB: "CV (anglais)", soon: "Bientôt disponible", gb: " Go", mb: " Mo"
+    },
+    en: {
+      openMenu: "Open menu", closeMenu: "Close menu",
+      theme: function (l) { return "Theme: " + l + ". Change"; }, auto: "Automatic (device)", light: "Light", dark: "Dark",
+      shotOf: "Screenshot of ", logoOf: "Logo ", osText: "A digital environment to build.",
+      slideOf: function (i, n) { return i + " of " + n; }, details: "View details",
+      prev: "Previous project", next: "Next project", tabs: "Projects", close: "Close",
+      shotsOf: "Screenshots of ", shotAlt: function (i, n) { return "Screenshot " + i + " of " + n; },
+      prevShot: "Previous screenshot", nextShot: "Next screenshot",
+      emptyTitle: "Screenshots coming soon", emptyText: function (n) { return n + " screens will be added here."; },
+      features: "Features", stack: "Tech stack", techs: "Technologies", groups: { "Base de données": "Databases" },
+      cvA: "Resume (French)", cvB: "Resume (English)", soon: "Coming soon", gb: " GB", mb: " MB"
+    }
+  }[LANG];
+
+  root.classList.remove("no-js");
 
   /* ---------- Compteurs animés ---------- */
   document.querySelectorAll("[data-count]").forEach(function (el) {
@@ -31,24 +66,23 @@
     if (!nav) return;
     nav.classList.remove("open");
     toggle.setAttribute("aria-expanded", "false");
-    toggle.setAttribute("aria-label", "Ouvrir le menu");
+    toggle.setAttribute("aria-label", S.openMenu);
   }
   if (toggle && nav) {
     toggle.addEventListener("click", function () {
       var open = nav.classList.toggle("open");
       toggle.setAttribute("aria-expanded", String(open));
-      toggle.setAttribute("aria-label", open ? "Fermer le menu" : "Ouvrir le menu");
+      toggle.setAttribute("aria-label", open ? S.closeMenu : S.openMenu);
     });
     document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeMenu(); });
   }
 
   /* ---------- Thème : automatique (appareil), clair ou sombre ---------- */
-  var root = document.documentElement;
   var themeBtn = document.getElementById("themeToggle");
   var themeMenu = document.getElementById("themeMenu");
   var themeMeta = document.querySelector('meta[name="theme-color"]');
   var darkQuery = window.matchMedia("(prefers-color-scheme: dark)");
-  var LABELS = { auto: "Automatique (appareil)", light: "Clair", dark: "Sombre" };
+  var LABELS = { auto: S.auto, light: S.light, dark: S.dark };
 
   function readPref() {
     try { var v = localStorage.getItem("theme"); if (v === "light" || v === "dark") return v; } catch (e) {}
@@ -59,7 +93,7 @@
     root.dataset.pref = pref;
     root.dataset.theme = eff;
     if (themeMeta) themeMeta.content = eff === "dark" ? "#080d1c" : "#f5f8ff";
-    if (themeBtn) themeBtn.setAttribute("aria-label", "Thème : " + LABELS[pref] + ". Changer");
+    if (themeBtn) themeBtn.setAttribute("aria-label", S.theme(LABELS[pref]));
     if (themeMenu) themeMenu.querySelectorAll("[data-pref]").forEach(function (b) { b.setAttribute("aria-checked", String(b.dataset.pref === pref)); });
   }
   function setPref(pref) {
@@ -155,18 +189,25 @@
     box.addEventListener("pointerleave", function () { tx = ty = 0; kick(); });
   }
 
-  /* Lien CV */
-  document.querySelectorAll("[data-cv]").forEach(function (a) { if (SITE.cv) a.href = SITE.cv; });
+  /* Lien CV : le CV dans la langue de la page, téléchargé en PDF */
+  document.querySelectorAll("[data-cv]").forEach(function (a) {
+    var f = LANG === "en" ? (SITE.cvEn || SITE.cv) : SITE.cv;
+    if (f) {
+      a.href = U(f);
+      a.setAttribute("download", f.split("/").pop());   // force le téléchargement du fichier
+      a.setAttribute("type", "application/pdf");
+    }
+  });
 
   /* ---------- Logos des technologies ---------- */
   var TECH = {"Python":"python","FastAPI":"fastapi","Node.js":"nodejs","Java":"java","Spring":"spring","React":"react","React.js":"react","React Native":"react","Angular":"angular","JavaScript":"javascript","HTML / CSS":"html5","Figma":"figma","TensorFlow":"tensorflow","Pandas":"pandas","NumPy":"numpy","Docker":"docker","Linux / CLI":"linux","Nginx":"nginx","Git":"git","OBS Studio":"obsstudio","MongoDB":"mongodb","PostgreSQL":"postgresql","Android":"android","iOS":"apple"};
   var chip = function (name) {
     var f = TECH[name];
-    return "<span>" + (f ? '<img src="assets/images/tech/' + f + '.svg" alt="" width="16" height="16" loading="lazy">' : "") + name + "</span>";
+    return "<span>" + (f ? '<img src="' + U("assets/images/tech/" + f + ".svg") + '" alt="" width="16" height="16" loading="lazy">' : "") + name + "</span>";
   };
 
   var tagsOf = function (p) {
-    if (!p.stack) return p.tags;
+    if (!p.stack) return L(p.tags) || [];
     var out = [];
     Object.keys(p.stack).forEach(function (k) { p.stack[k].forEach(function (t) { if (out.indexOf(t) < 0) out.push(t); }); });
     return out;
@@ -176,29 +217,29 @@
   var slider = document.getElementById("slider");
   if (slider && PROJECTS.length) {
     var slideHTML = function (p, i) {
-      var shot = '<div class="shot ' + p.theme + (p.logo ? " has-logo" : "") + '"><img class="shot-cap" src="' + p.image + '" alt="Capture de ' + p.name + '" loading="lazy">' +
-        (p.logo ? '<img class="shot-logo" src="' + p.logo + '" alt="Logo ' + p.name + '">' : "") +
+      var shot = '<div class="shot ' + p.theme + (p.logo ? " has-logo" : "") + '"><img class="shot-cap" src="' + U(p.image) + '" alt="' + S.shotOf + p.name + '" loading="lazy">' +
+        (p.logo ? '<img class="shot-logo" src="' + U(p.logo) + '" alt="' + S.logoOf + p.name + '">' : "") +
         (p.logo ? "" : p.os
-          ? '<div class="os-win"><div class="os-bar"><i></i><i></i><i></i></div><div class="os-body"><b>' + p.name + "</b><span>Un environnement numérique à construire.</span></div></div>"
+          ? '<div class="os-win"><div class="os-bar"><i></i><i></i><i></i></div><div class="os-body"><b>' + p.name + "</b><span>" + S.osText + "</span></div></div>"
           : '<span class="shot-word">' + p.word + "</span>") + "</div>";
       var actions = (p.links || []).map(function (l) {
         return l.download
-          ? '<a class="dl" href="' + l.href + '" download data-file="' + l.href + '"><b>' + l.label + "</b><small>" + (l.kind || "") + "</small></a>"
-          : '<a class="link-out' + (l.primary ? " primary" : "") + '" href="' + l.href + '" target="_blank" rel="noopener">' + l.label + " ↗</a>";
-      }).join("") + (p.hint ? '<span class="hint">' + p.hint + "</span>" : "");
-      return '<article class="card slide" id="' + p.id + '" role="tabpanel" aria-roledescription="diapositive" aria-label="' + (i + 1) + " sur " + PROJECTS.length + '">' + shot +
-        '<div class="p-body"><div class="p-meta"><span>' + p.category + '</span><span class="status' + (p.live ? " live" : "") + '">' + p.status + "</span></div>" +
-        "<h3>" + p.name + "</h3><p>" + p.summary + "</p>" +
+          ? '<a class="dl" href="' + U(l.href) + '" download data-file="' + U(l.href) + '"><b>' + L(l.label) + "</b><small>" + (L(l.kind) || "") + "</small></a>"
+          : '<a class="link-out' + (l.primary ? " primary" : "") + '" href="' + l.href + '" target="_blank" rel="noopener">' + L(l.label) + " ↗</a>";
+      }).join("") + (p.hint ? '<span class="hint">' + L(p.hint) + "</span>" : "");
+      return '<article class="card slide" id="' + p.id + '" role="tabpanel" aria-roledescription="slide" aria-label="' + S.slideOf(i + 1, PROJECTS.length) + '">' + shot +
+        '<div class="p-body"><div class="p-meta"><span>' + L(p.category) + '</span><span class="status' + (p.live ? " live" : "") + '">' + L(p.status) + "</span></div>" +
+        "<h3>" + p.name + "</h3><p>" + L(p.summary) + "</p>" +
         '<div class="chips">' + tagsOf(p).map(chip).join("") + "</div>" +
-        '<div class="p-actions"><button type="button" class="link-out detail-btn" data-open="' + p.id + '">Voir les détails <span aria-hidden="true">→</span></button>' + actions + "</div></div></article>";
+        '<div class="p-actions"><button type="button" class="link-out detail-btn" data-open="' + p.id + '">' + S.details + ' <span aria-hidden="true">→</span></button>' + actions + "</div></div></article>";
     };
 
     slider.innerHTML =
       '<div class="slides">' + PROJECTS.map(slideHTML).join("") + "</div>" +
       '<div class="slider-ctrl">' +
-        '<div class="arrows"><button class="arrow" id="prev" aria-label="Projet précédent">←</button><button class="arrow" id="next" aria-label="Projet suivant">→</button></div>' +
+        '<div class="arrows"><button class="arrow" id="prev" aria-label="' + S.prev + '">←</button><button class="arrow" id="next" aria-label="' + S.next + '">→</button></div>' +
         '<span class="counter" id="counter" aria-live="polite"></span>' +
-        '<div class="tabs" role="tablist" aria-label="Projets">' +
+        '<div class="tabs" role="tablist" aria-label="' + S.tabs + '">' +
           PROJECTS.map(function (p, i) { return '<button class="tab" role="tab" data-i="' + i + '" aria-label="' + p.name + '">' + p.name + "</button>"; }).join("") +
         "</div></div>";
 
@@ -267,21 +308,22 @@
     var detailHTML = function (p, links) {
       var stack = p.stack
         ? Object.keys(p.stack).map(function (k) {
-            return '<div class="stack-row"><h4>' + k + '</h4><div class="chips">' + p.stack[k].map(chip).join("") + "</div></div>";
+            return '<div class="stack-row"><h4>' + (S.groups[k] || k) + '</h4><div class="chips">' + p.stack[k].map(chip).join("") + "</div></div>";
           }).join("")
-        : '<div class="stack-row"><h4>Technologies</h4><div class="chips">' + p.tags.map(chip).join("") + "</div></div>";
+        : '<div class="stack-row"><h4>' + S.techs + '</h4><div class="chips">' + (L(p.tags) || []).map(chip).join("") + "</div></div>";
       var shots = (p.screens && p.screens.length)
-        ? '<div class="d-track" tabindex="0" aria-label="Captures d\u2019écran de ' + p.name + '">' + p.screens.map(function (s, i) {
-            return '<img src="assets/images/projects/' + p.id + "/" + s + '" alt="Capture ' + (i + 1) + " de " + p.name + '" loading="lazy">';
-          }).join("") + '</div><div class="d-arrows"><button type="button" class="arrow" data-dir="-1" aria-label="Capture précédente">←</button><button type="button" class="arrow" data-dir="1" aria-label="Capture suivante">→</button></div>'
-        : '<div class="d-empty"><strong>Captures à venir</strong><span>Les écrans de ' + p.name + " seront ajoutés ici.</span></div>";
-      var features = (p.features && p.features.length)
-        ? "<h3>Fonctionnalités</h3><ul class=\"d-features\">" + p.features.map(function (f) { return "<li>" + f + "</li>"; }).join("") + "</ul>"
+        ? '<div class="d-track" tabindex="0" aria-label="' + S.shotsOf + p.name + '">' + p.screens.map(function (s, i) {
+            return '<img src="' + U("assets/images/projects/" + p.id + "/" + s) + '" alt="' + S.shotAlt(i + 1, p.name) + '" loading="lazy">';
+          }).join("") + '</div><div class="d-arrows"><button type="button" class="arrow" data-dir="-1" aria-label="' + S.prevShot + '">←</button><button type="button" class="arrow" data-dir="1" aria-label="' + S.nextShot + '">→</button></div>'
+        : '<div class="d-empty"><strong>' + S.emptyTitle + "</strong><span>" + S.emptyText(p.name) + "</span></div>";
+      var feats = L(p.features);
+      var features = (feats && feats.length)
+        ? "<h3>" + S.features + '</h3><ul class="d-features">' + feats.map(function (f) { return "<li>" + f + "</li>"; }).join("") + "</ul>"
         : "";
-      var tile = p.logo ? '<img src="' + p.logo + '" alt="">' : "<b>" + p.name.slice(0, 2) + "</b>";
-      return '<div class="d-card"><button type="button" class="d-close" aria-label="Fermer">×</button>' +
-        '<div class="d-head"><span class="d-tile">' + tile + '</span><div><span class="d-cat">' + p.category + '</span><h2 id="dTitle">' + p.name + '</h2></div><span class="status' + (p.live ? " live" : "") + '">' + p.status + "</span></div>" +
-        '<div class="d-grid"><div class="d-shots">' + shots + '</div><div class="d-info"><p>' + (p.details || p.summary) + "</p>" + features + "<h3>Stack technique</h3>" + stack +
+      var tile = p.logo ? '<img src="' + U(p.logo) + '" alt="">' : "<b>" + p.name.slice(0, 2) + "</b>";
+      return '<div class="d-card"><button type="button" class="d-close" aria-label="' + S.close + '">×</button>' +
+        '<div class="d-head"><span class="d-tile">' + tile + '</span><div><span class="d-cat">' + L(p.category) + '</span><h2 id="dTitle">' + p.name + '</h2></div><span class="status' + (p.live ? " live" : "") + '">' + L(p.status) + "</span></div>" +
+        '<div class="d-grid"><div class="d-shots">' + shots + '</div><div class="d-info"><p>' + (L(p.details) || L(p.summary)) + "</p>" + features + "<h3>" + S.stack + "</h3>" + stack +
         (links ? '<div class="p-actions">' + links + "</div>" : "") + "</div></div></div>";
     };
 
@@ -291,7 +333,7 @@
       var links = [].map.call(slider.querySelectorAll("#" + id + " .p-actions a"), function (a) { return a.outerHTML; }).join("");
       dlg.innerHTML = detailHTML(PROJECTS[i], links);
       lastFocus = document.activeElement;
-      document.documentElement.classList.add("modal-open");
+      root.classList.add("modal-open");
       dlg.showModal();
       requestAnimationFrame(function () { dlg.classList.add("show"); });
       dlg.querySelector(".d-close").focus();
@@ -308,7 +350,7 @@
       dlg.classList.remove("show");
       setTimeout(function () {
         dlg.close();
-        document.documentElement.classList.remove("modal-open");
+        root.classList.remove("modal-open");
         if (lastFocus && lastFocus.focus) lastFocus.focus();
       }, reduce ? 0 : 380);
     };
@@ -329,13 +371,15 @@
     var out = [];
     if (SITE.email) out.push('<a class="btn btn-primary" href="mailto:' + SITE.email + '">' + SITE.email + "</a>");
     if (SITE.whatsapp) out.push('<a class="btn btn-ghost" href="https://wa.me/' + SITE.whatsapp.replace(/\D/g, "") + '" target="_blank" rel="noopener">WhatsApp</a>');
+    if (SITE.cv) out.push('<a class="btn btn-ghost" href="' + U(SITE.cv) + '" download="' + SITE.cv.split("/").pop() + '" type="application/pdf">' + S.cvA + "</a>");
+    if (SITE.cvEn) out.push('<a class="btn btn-ghost" href="' + U(SITE.cvEn) + '" download="' + SITE.cvEn.split("/").pop() + '" type="application/pdf">' + S.cvB + "</a>");
     if (SITE.linkedin) out.push('<a class="btn btn-ghost" href="' + SITE.linkedin + '" target="_blank" rel="noopener">LinkedIn</a>');
     if (SITE.github) out.push('<a class="btn btn-ghost" href="' + SITE.github + '" target="_blank" rel="noopener">GitHub</a>');
     box.innerHTML = out.join("");
   }
 
   /* ---------- Fichiers à télécharger : taille ou « Bientôt disponible » (en ligne) ---------- */
-  var fmt = function (b) { return b > 1e9 ? (b / 1e9).toFixed(1) + " Go" : (b / 1e6).toFixed(1) + " Mo"; };
+  var fmt = function (b) { return b > 1e9 ? (b / 1e9).toFixed(1) + S.gb : (b / 1e6).toFixed(1) + S.mb; };
   if (/^https?:$/.test(location.protocol)) {
     document.querySelectorAll("a[data-file]").forEach(function (a) {
       fetch(a.dataset.file, { method: "HEAD" }).then(function (r) {
@@ -345,7 +389,7 @@
         if (len && s) s.textContent += " · " + fmt(len);
       }).catch(function () {
         a.classList.add("is-off"); a.removeAttribute("download"); a.setAttribute("aria-disabled", "true");
-        var s = a.querySelector("small"); if (s) s.textContent = "Bientôt disponible";
+        var s = a.querySelector("small"); if (s) s.textContent = S.soon;
       });
     });
   }

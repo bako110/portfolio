@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>CV — Robert BAKO</title>
+<style>
+  @page { size: A4; margin: 0; }
+  :root { --navy: #0a1a3a; --navy2: #12306b; --blue: #2f6bff; --blue-d: #1f4fd1; --cyan: #27c4f5; --ink: #14203a; --muted: #5a6985; --line: #dde6f7; --tint: #f2f6ff; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { font-family: "Segoe UI", "Inter", Arial, sans-serif; font-size: 9pt; line-height: 1.38; color: var(--ink); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .page { width: 210mm; height: 297mm; display: grid; grid-template-rows: auto 1fr; overflow: hidden; background: #fff; }
+
+  /* ----- Bandeau ----- */
+  .hero { position: relative; color: #fff; padding: 6.5mm 12mm 5.5mm; display: grid; grid-template-columns: 31mm 1fr 47mm; gap: 6mm; align-items: center;
+    background: radial-gradient(circle at 92% 8%, rgba(39,196,245,.38) 0, transparent 34%), radial-gradient(circle at 62% 130%, rgba(47,107,255,.55) 0, transparent 46%), linear-gradient(118deg, #081634 0%, #12306b 58%, #1d4ed8 100%); }
+  .hero::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1.3mm; background: linear-gradient(90deg, var(--blue), var(--cyan)); }
+  .photo { width: 31mm; height: 31mm; border-radius: 50%; padding: 1.1mm; background: linear-gradient(135deg, var(--cyan), var(--blue)); box-shadow: 0 2mm 5mm rgba(0,0,0,.28); }
+  .photo img { width: 100%; height: 100%; object-fit: cover; object-position: center 22%; border-radius: 50%; border: .9mm solid #fff; display: block; }
+  .id h1 { margin: 0; font-size: 25pt; line-height: 1; letter-spacing: -.01em; font-weight: 300; }
+  .id h1 b { font-weight: 800; margin-right: 2.2mm; }
+  .id .role { margin: 2mm 0 2mm; font-size: 9.6pt; letter-spacing: .15em; text-transform: uppercase; color: var(--cyan); font-weight: 600; }
+  .id .tag { margin: 0; font-size: 9pt; color: #d9e6ff; max-width: 96mm; line-height: 1.4; }
+  .contact div { display: flex; gap: 2.2mm; align-items: flex-start; margin-bottom: 1.9mm; font-size: 8.2pt; word-break: break-word; color: #eef4ff; }
+  .contact svg { width: 3.5mm; height: 3.5mm; flex: none; margin-top: .3mm; fill: none; stroke: var(--cyan); stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* ----- Corps ----- */
+  .body { display: grid; grid-template-columns: 62mm 1fr; min-height: 0; }
+  aside { background: var(--tint); border-right: .3mm solid var(--line); }
+  .side { padding: 6mm 6mm 6mm 7mm; }
+  aside h2 { font-size: 8.4pt; letter-spacing: .17em; text-transform: uppercase; color: var(--navy); margin: 0 0 2.4mm; padding-bottom: 1.4mm; position: relative; }
+  aside h2::after { content: ""; position: absolute; left: 0; bottom: 0; width: 100%; height: .3mm; background: var(--line); }
+  aside h2::before { content: ""; position: absolute; left: 0; bottom: 0; width: 9mm; height: .8mm; background: linear-gradient(90deg, var(--blue), var(--cyan)); z-index: 1; border-radius: 1mm; }
+  .block { margin-bottom: 5mm; }
+  .sk b { display: block; font-size: 7.8pt; color: var(--blue-d); font-weight: 700; letter-spacing: .06em; text-transform: uppercase; margin: 2mm 0 1mm; }
+  .sk .chips { display: flex; flex-wrap: wrap; gap: 1.2mm; }
+  .sk .chips span { display: inline-flex; align-items: center; gap: 1.2mm; font-size: 7.8pt; background: #fff; border: .25mm solid var(--line); padding: .5mm 2mm .5mm .8mm; border-radius: 3mm; color: var(--ink); font-weight: 500; }
+  .sk .chips img { width: 3.4mm; height: 3.4mm; display: block; }
+  .lang div { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.6mm; font-size: 8.8pt; font-weight: 600; }
+  .lang small { color: var(--muted); font-weight: 400; font-size: 7.6pt; margin-left: 1.2mm; }
+  .dots { display: inline-flex; gap: .8mm; }
+  .dots i { width: 2mm; height: 2mm; border-radius: 50%; background: #cfdbf5; }
+  .dots i.on { background: linear-gradient(135deg, var(--blue), var(--cyan)); }
+  .edu .it { position: relative; padding-left: 4.2mm; margin-bottom: 2.6mm; }
+  .edu .it::before { content: ""; position: absolute; left: 0; top: 1.4mm; width: 2mm; height: 2mm; border-radius: 50%; background: var(--blue); box-shadow: 0 0 0 .7mm #cfe0ff; }
+  .edu .it::after { content: ""; position: absolute; left: .85mm; top: 3.8mm; bottom: -2.6mm; width: .3mm; background: var(--line); }
+  .edu .it:last-child::after { display: none; }
+  .edu .yr { font-size: 7.6pt; color: var(--blue-d); font-weight: 700; letter-spacing: .04em; }
+  .edu .sch { font-size: 8.5pt; font-weight: 800; color: var(--navy); text-transform: uppercase; letter-spacing: .02em; line-height: 1.25; }
+  .edu .deg { font-size: 8.3pt; color: #33415f; }
+
+  main { padding: 5.4mm 11mm 8mm 8mm; position: relative; }
+  main h2 { font-size: 9.2pt; letter-spacing: .16em; text-transform: uppercase; color: var(--navy); margin: 3.2mm 0 1.8mm; display: flex; align-items: center; gap: 2.2mm; font-weight: 800; }
+  main h2:first-child { margin-top: 0; }
+  main h2::before { content: ""; width: 1.3mm; height: 4.4mm; background: linear-gradient(180deg, var(--blue), var(--cyan)); border-radius: .7mm; }
+  main h2::after { content: ""; flex: 1; height: .3mm; background: var(--line); }
+  .summary { margin: 0; color: #28365a; text-align: justify; }
+  .summary b { color: var(--navy); }
+
+  .kpi { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.4mm; margin-top: 2.6mm; }
+  .kpi div { background: linear-gradient(160deg, #f5f8ff, #eaf1ff); border: .3mm solid var(--line); border-radius: 2mm; padding: 1.6mm 1.6mm 1.7mm; text-align: center; }
+  .kpi strong { display: block; font-size: 15pt; line-height: 1.05; color: var(--blue-d); font-weight: 800; letter-spacing: -.01em; }
+  .kpi sup { font-size: 8pt; }
+  .kpi span { display: block; font-size: 7.2pt; color: var(--muted); line-height: 1.25; margin-top: .6mm; }
+
+  .tl { position: relative; padding-left: 5mm; }
+  .tl::before { content: ""; position: absolute; left: .9mm; top: 1.5mm; bottom: 1mm; width: .3mm; background: var(--line); }
+  .job { position: relative; margin-bottom: 1.8mm; }
+  .job::before { content: ""; position: absolute; left: -5mm; top: 1.2mm; width: 2.1mm; height: 2.1mm; border-radius: 50%; background: #fff; border: .6mm solid var(--blue); }
+  .job .top { display: flex; justify-content: space-between; align-items: baseline; gap: 3mm; }
+  .job h3 { font-size: 9.7pt; margin: 0; color: var(--navy); }
+  .job .when { font-size: 7.6pt; color: var(--blue-d); background: #e6eeff; padding: .4mm 2.3mm; border-radius: 3mm; font-weight: 700; white-space: nowrap; }
+  .job .org { font-size: 8.4pt; color: var(--muted); margin: .1mm 0 .6mm; font-weight: 600; }
+  .job ul { margin: 0; padding-left: 3.6mm; }
+  .job li { margin-bottom: .4mm; color: #28365a; }
+
+  .proj { display: grid; grid-template-columns: 1fr 1fr; gap: 2mm; }
+  .card { display: flex; gap: 2.4mm; border: .3mm solid var(--line); border-radius: 2mm; padding: 1.6mm 2mm; background: #fff; box-shadow: 0 .4mm 1.2mm rgba(15,40,100,.06); break-inside: avoid; }
+  .card.wide { grid-column: 1 / -1; background: linear-gradient(100deg, #f4f8ff, #ffffff 70%); border-color: #c6d8ff; }
+  .logo { width: 11mm; height: 11mm; flex: none; background: #fff; border: .25mm solid var(--line); border-radius: 2mm; display: grid; place-items: center; padding: .8mm; }
+  .card.wide .logo { width: 13mm; height: 13mm; }
+  .logo img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; }
+  .ct { min-width: 0; flex: 1; }
+  .ct h4 { margin: 0; font-size: 9pt; color: var(--navy); display: flex; justify-content: space-between; gap: 1.6mm; align-items: baseline; }
+  .ct h4 em { font-style: normal; font-size: 6.8pt; font-weight: 700; color: #fff; background: linear-gradient(90deg, var(--blue), #4d8dff); padding: .2mm 1.7mm; border-radius: 2mm; white-space: nowrap; letter-spacing: .02em; }
+  .ct p { margin: .5mm 0 0; font-size: 7.9pt; color: #33415f; line-height: 1.3; }
+  .ct .st { margin-top: .7mm; font-size: 7.2pt; color: var(--blue-d); font-weight: 700; }
+
+  .aw { margin: 0; padding: 0; list-style: none; }
+  .aw li { position: relative; padding-left: 4.4mm; margin-bottom: 1mm; color: #28365a; }
+  .aw li::before { content: "★"; position: absolute; left: 0; top: -.2mm; color: var(--blue); font-size: 8.4pt; }
+  .foot { position: absolute; left: 8mm; right: 11mm; bottom: 5mm; font-size: 7.6pt; color: var(--muted); border-top: .3mm solid var(--line); padding-top: 1.6mm; display: flex; justify-content: space-between; }
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="hero">
+    <div class="photo"><img src="photo.jpg" alt=""></div>
+    <div class="id">
+      <h1><b>ROBERT</b>BAKO</h1>
+      <div class="role">Développeur Full Stack · Web &amp; Mobile</div>
+      <p class="tag">Je construis des produits numériques utiles et adaptés à l'Afrique, du premier prototype à la mise en ligne.</p>
+    </div>
+    <div class="contact">
+      <div><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg><span>+226 57 44 36 92</span></div>
+      <div><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg><span>bakorobert2001@gmail.com</span></div>
+      <div><svg viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><span>Ouagadougou, Burkina Faso</span></div>
+      <div><svg viewBox="0 0 24 24"><path d="M9 19c-4 1.2-4-2-6-2.5M15 21v-3.2a2.8 2.8 0 0 0-.8-2.2c2.7-.3 5.5-1.3 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.3 4.3 0 0 0-.1-3.2s-1-.3-3.3 1.3a11.4 11.4 0 0 0-6 0C6.7 2.9 5.7 3.2 5.7 3.2a4.3 4.3 0 0 0-.1 3.2A4.6 4.6 0 0 0 4.3 9.6c0 4.7 2.8 5.7 5.5 6a2.8 2.8 0 0 0-.8 2.2V21"/></svg><span>github.com/bako110</span></div>
+    </div>
+  </header>
+
+  <div class="body">
+    <aside><div class="side">
+      <div class="block sk"><h2>Compétences</h2>
+        <b>Web &amp; mobile</b><div class="chips"><span><img src="../../assets/images/tech/react.svg" alt="">React.js</span><span><img src="../../assets/images/tech/react.svg" alt="">React Native</span><span><img src="../../assets/images/tech/angular.svg" alt="">Angular</span><span><img src="../../assets/images/tech/javascript.svg" alt="">JavaScript</span><span><img src="../../assets/images/tech/html5.svg" alt="">HTML / CSS</span><span><img src="../../assets/images/tech/figma.svg" alt="">Figma</span></div>
+        <b>Backend &amp; API</b><div class="chips"><span><img src="../../assets/images/tech/python.svg" alt="">Python</span><span><img src="../../assets/images/tech/fastapi.svg" alt="">FastAPI</span><span><img src="../../assets/images/tech/nodejs.svg" alt="">Node.js</span><span><img src="../../assets/images/tech/java.svg" alt="">Java</span><span><img src="../../assets/images/tech/spring.svg" alt="">Spring</span></div>
+        <b>Bases de données</b><div class="chips"><span><img src="../../assets/images/tech/postgresql.svg" alt="">PostgreSQL</span><span><img src="../../assets/images/tech/mongodb.svg" alt="">MongoDB</span></div>
+        <b>Data &amp; IA</b><div class="chips"><span><img src="../../assets/images/tech/tensorflow.svg" alt="">TensorFlow</span><span><img src="../../assets/images/tech/pandas.svg" alt="">Pandas</span><span><img src="../../assets/images/tech/numpy.svg" alt="">NumPy</span></div>
+        <b>Outils &amp; DevOps</b><div class="chips"><span><img src="../../assets/images/tech/git.svg" alt="">Git / GitHub</span><span><img src="../../assets/images/tech/docker.svg" alt="">Docker</span><span><img src="../../assets/images/tech/linux.svg" alt="">Linux</span><span><img src="../../assets/images/tech/nginx.svg" alt="">Nginx</span><span><img src="../../assets/images/tech/obsstudio.svg" alt="">OBS Studio</span></div>
+      </div>
+      <div class="block lang"><h2>Langues</h2>
+        <div><span>Français<small>courant</small></span><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></div>
+        <div><span>Anglais<small>courant</small></span><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></div>
+        <div><span>Dioula<small>courant</small></span><span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></div>
+        <div><span>Mooré<small>notions</small></span><span class="dots"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span></div>
+      </div>
+      <div class="block edu"><h2>Formation</h2>
+        <div class="it"><div class="yr">2024 – 2025</div><div class="sch">Institut WISE</div><div class="deg">Diplôme en algorithme et programmation</div></div>
+        <div class="it"><div class="yr">2020 – 2023</div><div class="sch">Université</div><div class="deg">Deuxième année universitaire (SEA)</div></div>
+        <div class="it"><div class="yr">2019 – 2020</div><div class="sch">Lycée Bogodogo de Ouagadougou</div><div class="deg">Baccalauréat scientifique, série C — mention assez bien (12,15)</div></div>
+        <div class="it"><div class="yr">Complémentaire</div><div class="sch">Gestion de projet</div><div class="deg">Formation reçue</div></div>
+      </div>
+    </div></aside>
+
+    <main>
+      <h2>Profil</h2>
+      <p class="summary">Fondateur du réseau social <b>GoFolyX</b> (Google Play) et développeur de l'application <b>BF1 TV</b> (App Store et Google Play). Diplômé en algorithme et programmation (Institut WISE), bachelier scientifique série C. Je conçois des applications web et mobiles et des API, du besoin jusqu'au déploiement. Rigoureux, autonome, bilingue français / anglais.</p>
+      <div class="kpi"><div><strong>8</strong><span>projets menés</span></div><div><strong>2</strong><span>App Store · Google Play</span></div><div><strong>3<sup>e</sup></strong><span>prix Hackathon SITHO 2026</span></div><div><strong>FR·EN</strong><span>bilingue, à distance</span></div></div>
+
+      <h2>Expérience professionnelle</h2>
+      <div class="tl">
+        <div class="job"><div class="top"><h3>Développeur backend</h3><span class="when">En cours</span></div><div class="org">Sahelys Group</div><ul><li>Backend du projet SONABHY : API et services.</li><li>Contribution au projet backend Tibi (en cours).</li></ul></div>
+        <div class="job"><div class="top"><h3>Développeur Web Stagiaire</h3><span class="when">Jusqu'en mars 2024</span></div><div class="org">Institut WISE</div><ul><li>Site web en HTML, CSS et JavaScript ; intégration de bases de données (MySQL).</li><li>Documentation technique ; collaboration en équipe Agile.</li><li>Solutions d'IA : chatbots et automatisations simples.</li></ul></div>
+        <div class="job"><div class="top"><h3>Formateur indépendant — Soutien scolaire</h3><span class="when">Depuis 2021</span></div><ul><li>Maths, physique et informatique (secondaire), méthode adaptée.</li></ul></div>
+      </div>
+
+      <h2>Projets majeurs</h2>
+      <div class="proj">
+        <div class="card wide"><div class="logo"><img src="../../assets/images/projects/logo-gofolyx.png" alt=""></div><div class="ct"><h4>GoFolyX <em>Fondateur</em></h4><p>Réseau social avec lives, reels, communautés et cagnottes de communauté. Intégration d'OBS pour redistribuer le live en temps réel. Disponible sur Google Play et sur le web.</p><div class="st">React Native · React.js · FastAPI · MongoDB · PostgreSQL · OBS</div></div></div>
+        <div class="card "><div class="logo"><img src="../../assets/images/projects/logo-bf1tv.png" alt=""></div><div class="ct"><h4>BF1 TV <em>iOS &amp; Android</em></h4><p>App de la chaîne BF1 TV : direct, émissions, replays. Sur l'App Store et Google Play.</p></div></div><div class="card "><div class="logo"><img src="../../assets/images/projects/logo-ediscussion.png" alt=""></div><div class="ct"><h4>eDiscussion <em>Android</em></h4><p>Messagerie mobile : appels voix et vidéo, stories, groupes et chaînes, chiffrement de bout en bout.</p><div class="st">React Native · FastAPI · PostgreSQL</div></div></div>
+        <div class="card "><div class="logo"><img src="../../assets/images/projects/logo-edvia.png" alt=""></div><div class="ct"><h4>EDVIA <em>Web &amp; mobile</em></h4><p>Application de gestion d'école : établissement, élèves et enseignants.</p><div class="st">React.js · Node.js · MongoDB</div></div></div><div class="card "><div class="logo"><img src="../../assets/images/projects/logo-sira.png" alt=""></div><div class="ct"><h4>Burkina Sira <em>Tourisme</em></h4><p>Application touristique qui valorise les destinations du Burkina Faso.</p></div></div>
+        <div class="card wide"><div class="logo"><img src="../../assets/images/projects/logo-nunilib.png" alt=""></div><div class="ct"><h4>NuniLib OS <em>Open source</em></h4><p>Système d'exploitation open source (prototype 2026.11) : bureau, centre de contrôle, installateur.</p></div></div>
+      </div>
+
+      <h2>Distinctions</h2>
+      <ul class="aw"><li><b>3<sup>e</sup> prix — Hackathon Tourism Tech</b>, Salon International du Tourisme et de l'Hôtellerie de Ouagadougou (SITHO) 2026</li><li>Lauréat à deux reprises au SITHO · deux distinctions à l'université</li></ul>
+
+      <div class="foot"><span>Références disponibles sur demande</span><span>github.com/bako110</span></div>
+    </main>
+  </div>
+</div>
+</body>
+</html>

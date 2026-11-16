@@ -27,7 +27,7 @@ portfolio_robert_bako/
 ├── downloads/
 │   ├── apk/            ediscussion.apk · edvia.apk
 │   ├── iso/            nunilib-os.iso
-│   └── cv/             CV_Robert_BAKO.pdf
+│   └── cv/             CV_Robert_BAKO_FR.pdf · CV_Robert_BAKO_EN.pdf (PDF uniquement)
 └── docs/               notes de déploiement
 ```
 
