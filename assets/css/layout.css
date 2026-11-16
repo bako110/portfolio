@@ -176,3 +176,13 @@
   .brand { font-size: 16px; }
   .header { gap: 8px; }
 }
+
+/* En-tête tablette */
+@media (min-width: 761px) and (max-width: 900px) {
+  .nav a { padding: 8px 6px; font-size: 13.5px; }
+  .nav a:not(.nav-cta)::after { left: 6px; right: 6px; }
+  .nav .nav-cta { margin-left: 2px; padding: 8px 12px; }
+  .brand { font-size: 15px; gap: 8px; }
+  .lang-switch { padding: 0 11px 0 9px; }
+  .head-right { gap: 6px; }
+}
